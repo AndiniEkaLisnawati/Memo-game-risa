@@ -20,77 +20,67 @@ export default function MemoryResultPage() {
   const recommendationsRef = useRef(null);
 
   useEffect(() => {
+    // try store first, then localStorage fallback
     const fromStore = results ?? getResultsFromStorage();
     if (!fromStore) {
       router.push("/game/memory");
       return;
     }
     setData(fromStore);
-    setTimeout(() => initAnimations(fromStore), 150);
+
+    // [AUDIO ADD] play sfx once
+    const audio = new Audio("/sounds/complete.mp3");
+    audio.volume = 0.8; // biar ga terlalu keras
+    audio.play().catch((e) => console.warn("Autoplay blocked:", e));
+
+    // small delay to allow rendering then play animations
+    setTimeout(() => initAnimations(fromStore), 120);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // GSAP timeline animations
   function initAnimations(res) {
     const tl = gsap.timeline();
-
     tl.fromTo(
       ".back-btn",
       { opacity: 0, y: -12 },
       { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }
     );
-
-    // ✨ Score Circle Intro
     tl.fromTo(
       scoreRef.current,
       { opacity: 0, scale: 0 },
-      { opacity: 1, scale: 1, duration: 0.9, ease: "back.out(1.7)" },
+      { opacity: 1, scale: 1, duration: 0.8, ease: "back.out(1.5)" },
       "-=0.2"
     );
-
-    // ✨ Score Count-Up + Pulse Effect
-    const scoreNum = scoreRef.current.querySelector(".score-number");
-    gsap.fromTo(
-      scoreNum,
-      { innerText: 0 },
+    tl.to(
+      scoreRef.current.querySelector(".score-number"),
       {
         innerText: res.points,
-        duration: 1.6,
+        duration: 1.4,
         snap: { innerText: 1 },
         ease: "power2.out",
-        onUpdate: () => {
-          // pulse kecil tiap naik angka
-          gsap.to(scoreNum, {
-            scale: 1.2,
-            duration: 0.15,
-            yoyo: true,
-            repeat: 1,
-            overwrite: "auto",
-          });
-        },
         onStart: startConfetti,
-      }
+      },
+      "-=0.4"
     );
-
     tl.fromTo(
       statsRef.current,
       { opacity: 0, y: 12 },
       { opacity: 1, y: 0, duration: 0.6 },
       "-=0.6"
     );
-
     tl.fromTo(
       ".result-item",
       { opacity: 0, y: 12 },
       { opacity: 1, y: 0, stagger: 0.08, duration: 0.35 },
       "-=0.4"
     );
-
     tl.fromTo(
       actionRef.current,
       { opacity: 0, y: 12 },
       { opacity: 1, y: 0, duration: 0.5 },
       "-=0.35"
     );
-
     tl.fromTo(
       recommendationsRef.current,
       { opacity: 0, y: 12 },
@@ -99,7 +89,7 @@ export default function MemoryResultPage() {
     );
   }
 
-  // 🎉 Confetti
+  // confetti canvas setup
   useEffect(() => {
     const canvas = confettiRef.current;
     if (!canvas) return;
@@ -161,6 +151,7 @@ export default function MemoryResultPage() {
     }
   }
 
+  // download achievement (html2canvas)
   async function downloadAchievement() {
     const el = document.getElementById("result-card");
     if (!el) return;
@@ -174,18 +165,33 @@ export default function MemoryResultPage() {
   function shareResults() {
     const shareText = `Aku baru saja main Memory RISA — skor ${data.points} 🎯, ${data.moves} gerakan, ${data.time}s. Coba deh!`;
     if (navigator.share) {
-      navigator.share({
-        title: "Memory RISA",
-        text: shareText,
-        url: window.location.href,
-      });
+      navigator
+        .share({
+          title: "Memory RISA",
+          text: shareText,
+          url: window.location.href,
+        })
+        .catch((e) => console.warn(e));
     } else {
-      navigator.clipboard.writeText(`${shareText} ${window.location.href}`);
+      navigator.clipboard
+        .writeText(`${shareText} ${window.location.href}`)
+        .then(() => {
+          const fb = document.createElement("div");
+          fb.className = "fixed top-4 right-4 bg-pink-600 text-white px-4 py-2 rounded-lg z-50";
+          fb.textContent = "Tautan disalin ke clipboard";
+          document.body.appendChild(fb);
+          gsap.fromTo(fb, { y: -20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.25 });
+          setTimeout(() => {
+            gsap.to(fb, { y: -20, opacity: 0, duration: 0.25, onComplete: () => fb.remove() });
+          }, 2000);
+        });
     }
   }
 
   function formatDuration(sec) {
-    const m = Math.floor(sec / 60).toString().padStart(2, "0");
+    const m = Math.floor(sec / 60)
+      .toString()
+      .padStart(2, "0");
     const s = (sec % 60).toString().padStart(2, "0");
     return `${m}:${s}`;
   }
@@ -196,7 +202,6 @@ export default function MemoryResultPage() {
     <div className="p-6 max-w-6xl mx-auto">
       <canvas ref={confettiRef} className="fixed inset-0 pointer-events-none z-50"></canvas>
 
-      {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <button
           className="back-btn p-2 rounded-full bg-white/60 hover:bg-white shadow-sm"
@@ -209,6 +214,7 @@ export default function MemoryResultPage() {
         </button>
         <h2 className="text-2xl font-extrabold text-pink-600">Hasil Game — Memory</h2>
       </div>
+
 
       <div
         id="result-card"

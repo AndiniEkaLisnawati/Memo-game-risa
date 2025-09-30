@@ -23,7 +23,7 @@ const GameCard = ({
   };
 
   return (
-    <Card className="group relative min-w-md overflow-hidden backdrop-blur-md bg-white/70 hover:bg-white/90 border border-pink-200 shadow-md rounded-xl transition-all duration-500 hover:shadow-xl hover:-translate-y-1">
+    <Card className="group relative max-w-screen md:min-w-md overflow-hidden backdrop-blur-md bg-white/70 hover:bg-white/90 border border-pink-200 shadow-md rounded-xl transition-all duration-500 hover:shadow-xl hover:-translate-y-1">
       {/* Gradient background floating effect */}
       <div className="absolute inset-0 bg-gradient-to-br from-pink-100 via-transparent to-pink-200 opacity-50 group-hover:opacity-70 transition-opacity duration-500" />
 
