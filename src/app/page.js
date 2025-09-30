@@ -117,7 +117,7 @@ export default function Home() {
             Kumpulin poin, seru-seruan, dan lihat siapa yang juara di leaderboard!
           </p>
           <div ref={addFadeSlide} className="flex gap-4">
-            <Link href="#games">
+            <Link href="/memoryGames">
               <CustomButton title="Mainkan Sekarang!" className="button-11 px-6 py-4 animate-pulse-slow" />
             </Link>
             <Link href="#leaderboard">
