@@ -19,7 +19,7 @@ export const useGameStore = create((set, get) => ({
     set({
       points: 0,
       moves: 0,
-      time: 0,
+      time: 30,
       matchedCards: [],
       gameOver: false,
       results: null,

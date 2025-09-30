@@ -1,4 +1,4 @@
-// pages/game/memory.jsx
+
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
@@ -47,7 +47,7 @@ export default function MemoryGamePage() {
   const [matched, setMatched] = useState([]); // pair ids
   const [moves, localSetMoves] = useState(0);
   const [points, localSetPoints] = useState(0);
-  const [time, localSetTime] = useState(0);
+  const [time, localSetTime] = useState(30);
   const [running, setRunning] = useState(true);
 
   const timerRef = useRef(null);
@@ -75,17 +75,35 @@ export default function MemoryGamePage() {
   }, [resetGame]);
 
   // timer jalan
-  useEffect(() => {
-    if (running) {
-      timerRef.current = setInterval(() => {
-        localSetTime((t) => {
-          setTime(t + 1);
-          return t + 1;
-        });
-      }, 1000);
-    }
-    return () => clearInterval(timerRef.current);
-  }, [running, setTime]);
+useEffect(() => {
+  if (running) {
+    timerRef.current = setInterval(() => {
+      localSetTime((t) => {
+        if (t <= 1) {
+          clearInterval(timerRef.current);
+          setRunning(false);
+          // simpan hasil akhir saat waktu habis
+          const final = {
+            points,
+            moves,
+            time: 0,
+            matchedCount: matched.length,
+            totalPairs,
+            answers: matched.map((m) => m),
+          };
+          setResults(final);
+          setTimeout(() => {
+            router.push("/result/memory");
+          }, 800);
+          return 0;
+        }
+        setTime(t - 1);
+        return t - 1;
+      });
+    }, 1000);
+  }
+  return () => clearInterval(timerRef.current);
+}, [running, setTime, matched, moves, points, router, setResults, totalPairs]);
 
   // sync ke store
   useEffect(() => {
@@ -272,7 +290,7 @@ export default function MemoryGamePage() {
             setFlipped([]);
             localSetMoves(0);
             localSetPoints(0);
-            localSetTime(0);
+            localSetTime(30);
             resetGame();
             setRunning(true);
           }}

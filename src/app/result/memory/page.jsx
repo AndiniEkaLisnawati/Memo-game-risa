@@ -207,7 +207,7 @@ export default function MemoryResultPage() {
           className="back-btn p-2 rounded-full bg-white/60 hover:bg-white shadow-sm"
           onClick={() => {
             resetGame();
-            router.push("/game/memory");
+            router.push("/");
           }}
         >
           <ArrowLeft className="w-5 h-5 text-pink-600" />
@@ -264,28 +264,7 @@ export default function MemoryResultPage() {
             <div className="text-2xl font-bold text-gray-800">{formatDuration(data.time)}</div>
           </div>
         </div>
-
-        {/* Results */}
-        <div className="mt-8 space-y-3">
-          {data.answers && data.answers.length > 0 ? (
-            data.answers.map((a, i) => (
-              <div
-                key={i}
-                className="result-item p-4 rounded-xl border-2 bg-white/70 hover:scale-[1.02] hover:shadow-lg transition"
-              >
-                <div className="flex justify-between items-center">
-                  <div className="text-left">
-                    <div className="text-sm font-medium text-gray-800">Pasangan #{i + 1}</div>
-                    <div className="text-xs text-gray-600">pair id: {a}</div>
-                  </div>
-                  <div className="text-sm font-semibold text-pink-600">✓</div>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-gray-600">Good job! Kamu udah nyelesain semua pasangan 🎀</p>
-          )}
-        </div>
+      
 
         {/* Actions */}
         <div ref={actionRef} className="flex flex-col sm:flex-row gap-3 justify-center items-center mt-8">
