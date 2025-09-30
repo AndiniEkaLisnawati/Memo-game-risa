@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { EnhancedButton } from "./EnchancedButton";
 import { Badge } from "./ui/badge";
 import { Clock, Target, Trophy, Users } from "lucide-react";
+import Image from "next/image";
+import game from "../../public/image/hero-game.png";
 
 const GameCard = ({
   title,
@@ -32,6 +34,7 @@ const GameCard = ({
           <CardTitle className="text-lg font-bold text-gray-900 group-hover:text-pink-600 transition-colors">
             {title}
           </CardTitle>
+          <Image src={game} width={40} height={40} alt="game"></Image>
           {isCompleted && (
             <Trophy className="h-6 w-6 text-yellow-500 animate-bounce" />
           )}
@@ -67,7 +70,7 @@ const GameCard = ({
         </div>
 
         <EnhancedButton
-          onClick={onPlay}
+          onClick={()=> onPlay && window.open("/memoryGames", "_blank")}
           disabled={isCompleted}
           variant={isCompleted ? "ghost" : "default"}
           size="lg"

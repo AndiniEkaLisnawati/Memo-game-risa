@@ -170,10 +170,10 @@ export default function Home() {
       <main className="max-w-screen mx-auto px-4 md:px-6 lg:px-8 py-8 space-y-16">
         <section className="w-full py-10 px-6 md:px-16 flex flex-col items-center">
           <h2 ref={addFadeSlide} className="text-3xl font-extrabold text-pink-700 mb-3">
-            🎮 Pilih Game Kamu
+            🎮 Game Kamu
           </h2>
           <p className="text-gray-600 text-lg text-center">Belajar sambil bermain! Kumpulan mini games seru untuk menguji dan meningkatkan pengetahuanmu tentang kesehatan reproduksi.</p>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 lg:gap-16 items-center mt-8">
+          <div className="grid grid-cols-1  gap-8 lg:gap-16 items-center mt-8">
             <GameCard
               title="Memory Cards"
               description="Uji pengetahuanmu dengan mencocokkan pasangan kartu seputar kesehatan reproduksi."

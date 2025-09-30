@@ -19,6 +19,7 @@ import {
   RotateCcw
 } from "lucide-react";
 
+
 // Data terms
 const termsAndDefs = [
   { id: 1, term: "Ovulasi", definition: "Pelepasan sel telur dari ovarium" },
@@ -36,6 +37,37 @@ function shuffleArray(arr) {
 }
 
 export default function MemoryGamePage() {
+  const audioRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  useEffect(() => {
+    audioRef.current = new Audio("/sounds/memo-backsound.mp3");
+    if (audioRef.current) {
+      audioRef.current.volume = 0.1;
+      audioRef.current.loop = true;
+
+      audioRef.current.play().catch((e) => {
+        console.log("Autoplay failed:", e);
+      }
+      );
+    }
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+    };
+  }, []);
+
+  const toggleAudio = () => {
+    if (audioRef.current) {
+      if (isPlaying) {  
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play();
+      }
+      setIsPlaying(!isPlaying);
+    }
+  };
+
   const router = useRouter();
   const { setResults, setPoints, setMoves, setTime, addMatched, resetGame } =
     useGameStore();
@@ -214,6 +246,46 @@ useEffect(() => {
           className="p-2 rounded-full bg-white/60 hover:bg-white shadow-sm"
         >
           <ArrowLeft className="w-5 h-5 text-pink-600" />
+        </button>
+        <button>
+         
+          <div
+            onClick={toggleAudio}
+            className="p-2 rounded-full bg-white/60 hover:bg-white shadow-sm"
+          >
+            {isPlaying ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 text-pink-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M10 9v6m4-6v6m5 5h2a2 2 0 002-2v-3a7 7 0 00-7-7h-1.5M14 7V5a3 3 0 00-3-3l-1.35.27a48.4 48.4 0 00-7.6 3.18A3 3 0 002 8v3m19 9l-4-4m0 0l-4-4m4 4H9"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 text-pink-600"
+                fill="none"
+
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 8a3 3 0 013 3v1m4 0a7 7 0 01-7 7h-1.5M14 7V5a3 3 0 00-3-3l-1.35.27a48.4 48.4 0 00-7.6 3.18A3 3 0 002 8v3m19 9l-4-4m0 0l-4-4m4 4H9"
+                />
+              </svg>
+            )}
+          </div>
         </button>
         <h1 className="text-2xl font-extrabold text-pink-600 flex items-center gap-2">
           <Sparkles className="w-6 h-6 text-pink-500" />
